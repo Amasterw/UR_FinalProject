@@ -14,5 +14,45 @@
     <script type="text/javascript" src="js/linreg.js"></script>
 </head>
 
+<body>
+
+      <!-- Title -->
+      <div class="title-header" style="font-size: 30px"><i>K</i>-Means Clustering and Linear Regressions of U.S. Universities and Colleges</div>
+      <!-- Subtitle -->
+      <div class="title-subheader">Select 2 parameters to cluster by</div>
+  
+  
+      <!-- Clustering buttons -->
+      <div class="btn cluster-btn admin" style="width: 150px;" data="admissions_info">Admissions Rate</div>
+      <div class="btn cluster-btn sat" data="score_info">SAT Score</div>
+      <div class="btn cluster-btn salary" style="width: 300px;" data="salary_info">Median Mid-Career Salary</div>
+  
+  
+      <div class="start-cluster">Cluster</div>
+      <div class="reset-btn" style="margin-left: 20px;">Reset</div>
+      <div class="all-state-btn" style="margin-left: 20px; width:120px;">Select All States</div>
+  
+  
+  
+  
+      <div class="title-subheader" style="clear: both;">Click on states whose universities you'd like to cluster</div>
+  
+  
+  
+      <svg width="1650" height="600" id="mapSVG">
+             <text x="675" y="55" id="univName">Interactive: hover over any circle on map or graph</text>
+         <text x="675" y="75" id="univInfo"></text>
+      </svg>
+  
+  
+      <!-- Title -->
+      <div class="title-header" style="font-size: 30px; margin-bottom: 30px; padding-top: 30px;">Linear Regressions of Various University Parameters</div>
+      <!-- Linear regression graphs  -->
+      <svg width="1650" height="650" id="linRegSVG"></svg>
+
+
+
+</body>
+
 
 
