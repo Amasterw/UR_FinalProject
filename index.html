@@ -2,7 +2,12 @@
 <meta charset="utf-8">
 <html>
   <head>
-      <!-- D3 -->
+    
+  </head>
+
+  <body>
+
+    <!-- D3 -->
     <script src="js/d3/d3.min.js"></script>
     <!-- jQuery for some animations and UI stuff -->
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -12,47 +17,457 @@
     <script type="text/javascript" src="js/kcluster.js"></script>
     <!-- linear regression functions we wrote -->
     <script type="text/javascript" src="js/linreg.js"></script>
-</head>
 
-<body>
+    <!-- Title -->
+    <div class="title-header" style="font-size: 30px"><i>K</i>-Means Clustering and Linear Regressions of U.S. Universities and Colleges</div>
+    <!-- Subtitle -->
+    <div class="title-subheader">Select 2 parameters to cluster by</div>
 
-      <!-- Title -->
-      <div class="title-header" style="font-size: 30px"><i>K</i>-Means Clustering and Linear Regressions of U.S. Universities and Colleges</div>
-      <!-- Subtitle -->
-      <div class="title-subheader">Select 2 parameters to cluster by</div>
-  
-  
-      <!-- Clustering buttons -->
-      <div class="btn cluster-btn admin" style="width: 150px;" data="admissions_info">Admissions Rate</div>
-      <div class="btn cluster-btn sat" data="score_info">SAT Score</div>
-      <div class="btn cluster-btn salary" style="width: 300px;" data="salary_info">Median Mid-Career Salary</div>
-  
-  
-      <div class="start-cluster">Cluster</div>
-      <div class="reset-btn" style="margin-left: 20px;">Reset</div>
-      <div class="all-state-btn" style="margin-left: 20px; width:120px;">Select All States</div>
-  
-  
-  
-  
-      <div class="title-subheader" style="clear: both;">Click on states whose universities you'd like to cluster</div>
-  
-  
-  
-      <svg width="1650" height="600" id="mapSVG">
-             <text x="675" y="55" id="univName">Interactive: hover over any circle on map or graph</text>
-         <text x="675" y="75" id="univInfo"></text>
-      </svg>
-  
-  
-      <!-- Title -->
-      <div class="title-header" style="font-size: 30px; margin-bottom: 30px; padding-top: 30px;">Linear Regressions of Various University Parameters</div>
-      <!-- Linear regression graphs  -->
-      <svg width="1650" height="650" id="linRegSVG"></svg>
+
+    <!-- Clustering buttons -->
+    <div type="button" class="btn cluster-btn admin" style="width: 150px;" data="admissions_info">Admissions Rate</div>
+    <div class="btn cluster-btn sat" data="score_info">SAT Score</div>
+    <div class="btn cluster-btn salary" style="width: 300px;" data="salary_info">Median Mid-Career Salary</div>
+
+    <!-- <button id="filter-btn" type="button" class="start-cluster">Cluster</button> -->
+    
+    <div class="start-cluster">Cluster</div>
+    <div class="reset-btn" style="margin-left: 20px;">Reset</div>
+    <div class="all-state-btn" style="margin-left: 20px; width:120px;">Select All States</div>
 
 
 
-</body>
+
+    <div class="title-subheader" style="clear: both;">Click on states whose universities you'd like to cluster</div>
 
 
 
+    <svg width="1650" height="600" id="mapSVG">
+           <text x="675" y="55" id="univName">Interactive: hover over any circle on map or graph</text>
+       <text x="675" y="75" id="univInfo"></text>
+    </svg>
+
+
+    <!-- Title -->
+    <div class="title-header" style="font-size: 30px; margin-bottom: 30px; padding-top: 30px;">Linear Regressions of Various University Parameters</div>
+    <!-- Linear regression graphs  -->
+    <svg width="1650" height="650" id="linRegSVG"></svg>
+
+
+
+    
+
+    
+
+
+
+
+
+
+
+    <!-- Start of JS -->
+    <script>
+
+      // From http://stackoverflow.com/questions/14167863/how-can-i-bring-a-circle-to-the-front-with-d3
+      // Solves the issue of bringing an element to the front
+      d3.selection.prototype.moveToFront = function() {
+        return this.each(function() {
+          this.parentNode.appendChild(this);
+        });
+      }
+
+      // From http://stackoverflow.com/questions/14167863/how-can-i-bring-a-circle-to-the-front-with-d3
+      // Solves the issue of moving an element to the back
+      d3.selection.prototype.moveToBack = function() {
+          return this.each(function() {
+              var firstChild = this.parentNode.firstChild;
+              if (firstChild) {
+                  this.parentNode.insertBefore(this, firstChild);
+              }
+          });
+      };
+
+
+      // Map guide used:
+      // https://bl.ocks.org/mbostock/4090848
+
+      /* ALL THE VARIABLES WE NEED TO TRACK GLOBALLY */
+
+      // Assign dimensions of SVG element
+      var width = 1300;
+      var height = 610;
+
+      // Colors
+      var DARK_PURPLE = "#825A6C";
+      var LIGHT_PURPLE = "#B58AA5";
+      var PINK = "#E39AB2";
+      var CLUSTER_PINK = "#FF9AB2";
+      var GRAY = "#E4E4E4";
+
+      // Global list of university JSONs
+      var uniJSONs;
+
+      // Selected parameters to cluster by
+      var selectedParms = [];
+
+      // Selected states to include universities to cluster
+      var selectedStates = [];
+
+      // Set the projection, based on the fact that we're using a US map
+      var projection = d3.geo.albersUsa().scale(1130).translate([width / 2, height / 2]);
+
+      // Set the path based on this projection
+      var path = d3.geo.path().projection(projection);
+
+      // SVG element
+      var svg = d3.select("#mapSVG");
+
+
+      // Map radii for various situations
+      var defCircleR = 3;
+      var largeCircleR = 10;
+
+
+
+      // xScale + yScale
+      var xScale;
+      var yScale;
+
+      // Axes
+      var xAxis;
+      var yAxis;
+
+      // Overall data for clustering
+      var overAllData = [];
+
+      // To refer to types of data via selected clustering categories
+      var DATA_MAPPINGS = {
+                  "score_info" : "mean_sat_score",
+                  "admissions_info" : "acceptance_rate",
+                  "salary_info" : "mid_career_median_salary"
+                }
+
+
+      // To refer to the titles of the generated graphs
+      var TITLE_MAPPINGS   =   {
+                    "mean_sat_score" : "SAT Score",
+                    "acceptance_rate" : "Acceptance Rate (%)",
+                    "mid_career_median_salary" : "Median Mid-Career Salary ($)"
+                   }
+
+
+      // The container SVG for the cluster graph
+      var clusterSVG;
+
+
+      // Where the SVG goes for the clustering
+      var cSVG;
+
+
+      // Dimensions of the clustering graph
+      var clusterHeight = 450;
+      var clusterWidth = 450;
+      var padding = 60;
+
+      // Offsets for the clustering graph
+      var xGraphOffset = 1058;
+      var yGraphOffset = 30;
+
+
+
+      // Cluster circles
+
+      var clusterCircleSize = 5;
+      var clusterCircleExpanded = 9;
+
+      // Data for cluster line
+      var clusterLines = [];
+
+      // Line SVG elements
+      var thaLines;
+
+
+
+      // Popover d values
+      var popOverD = "M2.84217094e-14,15.0033286 C2.84217094e-14,6.71721901 6.72196489,0 14.9984654,0 L145.001535,0 C153.284958,0 160,6.71386735 160,15.0033286 L160,81.0179743 C160,89.3040839 153.293616,95.8257794 145.008705,95.615906 C145.008705,95.615906 103.12327,94.1943408 95.8076299,96.0213029 C86.4716462,98.3528128 80,116 80,116 C80,116 72.9323922,98.2840499 63.8717532,96.0213029 C56.280768,94.125578 14.998882,95.5969452 14.998882,95.5969452 C6.71522822,95.8313115 2.84217094e-14,89.3074356 2.84217094e-14,81.0179743 L2.84217094e-14,15.0033286 Z";
+
+
+      // Dimensions of the popover
+      var POWidth = 160;
+      var POHeight = 116;
+
+
+      /* END OF GLOBAL VARIABLE INIT */
+
+
+      // Cluster dot mouseover callback function
+      function mouseOverCallback (d, selectedElmt) {
+
+        var circ = selectedElmt;
+        console.log(d)
+        console.log(selectedElmt);
+        circ.transition().attr("r", clusterCircleExpanded).style("fill", "white");
+        circ.moveToFront();
+                cSVG.selectAll(".clusterDot").moveToFront();
+        // Select map elements
+        var skool = d["school"];
+        console.log(skool);
+        var mapElements = d3.selectAll(".map-circle").filter(function (d) {
+          return d["school"] == skool;
+        });
+
+        // Reset and move to front
+        mapElements.transition().attr("r", largeCircleR);
+        mapElements.moveToFront();
+
+             // Label at the top w/info
+        d3.select("#univName").text(d["school"]);
+        d3.select("#univInfo").text("SAT Score: " + d["score_info"]["mean_sat_score"] + " | Admission Rate: "+d["admissions_info"]["acceptance_rate"]+"% | Median Mid-career Salary: $"+d["salary_info"]["mid_career_median_salary"]);
+
+      }
+
+
+
+      // Cluster dot mouseleave callback function
+       function mouseLeaveCallback (d, selectedElmt) {
+
+        var circ = selectedElmt;
+        circ.transition().attr("r", clusterCircleSize).style("fill", DARK_PURPLE);
+        circ.moveToBack();
+
+        // Get the lines that apply to this clusterId + move them to back
+        var clusterId = selectedElmt.data()[0]["clusterId"]
+        d3.selectAll(".cluster-line").filter(function (d) {
+          return d["clusterId"] == clusterId;
+        }).moveToBack();
+
+
+        // Select map elements
+        var skool = d["school"];
+        var mapElements = d3.selectAll(".map-circle").filter(function (d) {
+          return d["school"] == skool;
+        });
+
+        // Reset and move to back
+        mapElements.transition().attr("r", defCircleR);
+
+
+
+        // Reset top label
+        d3.select("#univName").text("Interactive: hover over any circle on map or graph");
+        d3.select("#univInfo").text("");
+
+       }
+
+
+
+       // Universal cluster line adding function
+       function addClusterLines (newClusters, svg) {
+        // Accumulate dot - cluster associations
+        clusterLines = [];
+        newClusters.each(function (d) {
+          console.log(d);
+          // Get all the cluster-circles w/appropriate clusterId
+          var clusterId = d["id"];
+          var assocCircles = svg.selectAll(".cluster-circle").filter(function (f) {
+            return f["clusterId"] == clusterId;
+          });
+
+          assocCircles.each(function (n) {
+            var lineJSON = { x1: n["cx"], y1: n["cy"], x2: d["cx"], y2: d["cy"], clusterId: clusterId }
+            clusterLines.push(lineJSON);
+          });
+        });
+
+        // Move the lines to the back of the display
+        var lineSVGs = svg.selectAll(".cluster-line")
+                  .data(clusterLines).enter()
+                .append("line")
+                  .attr("x1", function (d) { return d.x1; })
+                  .attr("y1", function (d) { return d.y1; })
+                  .attr("x2", function (d) { return d.x2; })
+                  .attr("y2", function (d) { return d.y2; })
+                  .attr("class", "cluster-line")
+                  .style("opacity", 0)
+                  .style("stroke", LIGHT_PURPLE)
+                  .style("stroke-width", 0.5)
+        lineSVGs.transition().duration(1000).style("opacity", 1.0);
+        return lineSVGs;
+       }
+
+
+       // Entering the centroid
+       function clusterMouseOver (d) {
+        //highlight circles in same cluster **AA**
+        var cId = d["id"];
+        console.log(cId);
+        var skools=[];
+        var aCircles = svg.selectAll(".cluster-circle")
+              .filter(function (f) {
+                if (f["clusterId"] == cId){
+                  skools.push(f["school"]);
+                  return true;
+                } else {
+                  return false;
+                }
+              });
+        aCircles.transition().attr("r", clusterCircleExpanded).style("fill", "white");
+        skools.forEach(function (s) {
+             var mElements = d3.selectAll(".map-circle").filter(function (d) { return d["school"] == s; });
+                  // Reset and move to back
+             mElements.transition().attr("r", largeCircleR);
+            mElements.moveToFront();
+          });
+       }
+
+
+       // Leaving the centroid
+       function clusterMouseLeave (d) {
+        //highlight circles in same cluster **AA**
+        var cId = d["id"];
+        var skools=[];
+        var aCircles = svg.selectAll(".cluster-circle").filter(function (f) {
+              if (f["clusterId"] == cId) {
+                skools.push(f["school"]);
+                return true;
+              } else {
+                return false;
+              }
+            });
+
+        aCircles.transition().attr("r", clusterCircleSize).style("fill", DARK_PURPLE);
+        skools.forEach(function (s) {
+            var mElements = d3.selectAll(".map-circle").filter(function (d) { return d["school"] == s; });
+                  // Reset and move to back
+            mElements.transition().attr("r", defCircleR);
+        });
+       }
+
+
+
+      // load the map JSON
+      d3.json("js/us-states.json", function(error, json) {
+
+        if (error) throw error;
+
+        svg.selectAll("path")
+          .data(json.features)
+          .enter()
+          .append("path")
+          .attr("d", path)
+          .attr("class", "state")
+          .on("mouseover", function (d) {
+
+            // Only reset non-selected states
+            var nonSelectedStates = d3.selectAll(".state").filter(function (d) {
+              console.log(d);
+              var inArray = false
+              selectedStates.forEach( function (s) {
+                console.log(s);
+                inArray = inArray || (d["properties"]["name"] == s)
+              });
+              return !inArray
+            }).style("fill", LIGHT_PURPLE); // Set all equal to this color
+
+            // Make the state that we're hovering over pink
+            d3.select(this).style("fill", PINK);
+
+            // Only move these back to original color if they're not part of the highlights / select state groupings
+            var nonSelectedMapCircles = d3.selectAll(".map-circle")
+                            .filter(function (d) {
+                              var inArray = false;
+                              console.log(selectedStates);
+                              selectedStates.forEach(function (s) {
+                                inArray = inArray || (s == d["location_info"]["state"]);
+                              });
+                              return !inArray;
+                            }).style("fill", DARK_PURPLE).style("stroke", "white");
+
+          })
+          .on("click", function (d) {
+            console.log(d);
+            // Get the selected SVG element
+            var s = d3.select(this);
+
+            // Get the state name
+            var state = d["properties"]["name"]
+
+            // Check to see if this state is already in the array
+            var ind = selectedStates.indexOf(state);
+
+            // If this state is not in the array
+            if (ind == -1) {
+              // Add it to the array
+              selectedStates.push(state);
+              // Make the fill pink
+              s.style("fill", PINK);
+              // Find the circles we need to highlight
+              var relevantCircles = d3.selectAll(".map-circle")
+                          .filter(function (d) {
+                            // Find the state
+                            var circleState = d["location_info"]["state"];
+                            console.log(circleState);
+                            circleState = circleState == "District of Columbia" ? "Maryland" : circleState;
+                            return circleState == state;
+                          });
+              relevantCircles.style("stroke", LIGHT_PURPLE).style("fill", "white");
+            } else {
+              selectedStates.splice(ind, 1); // Remove that state
+              s.style("fill", LIGHT_PURPLE);
+              d3.selectAll(".map-circle").filter(function (e) {
+                return e["location_info"]["state"] == state;
+              }).style("fill", DARK_PURPLE).style("stroke", "white");
+            }
+
+
+          }).on("mouseleave", function (d) {
+            // Get the state name
+            var state = d["properties"]["name"]
+
+            // Check to see if this state is already in the array
+            var inArray = false;
+            selectedStates.forEach(function (e) {
+              inArray = inArray || (state == e);
+            });
+
+            // If not in array, make the fill light purple again (b/c mouse out)
+            if (!inArray) {
+              d3.select(this).style("fill", LIGHT_PURPLE);
+            }
+
+            // Control highlighting well
+            var appropMapCircles = d3.selectAll(".map-circle").filter(function (d) {
+              var inArray = false;
+              selectedStates.forEach(function (e) {
+                inArray = inArray || (d["location_info"]["state"] == e);
+              });
+              return !inArray
+            });
+
+            appropMapCircles.style("fill", DARK_PURPLE).style("stroke", "white");
+
+          });
+
+      });
+
+
+
+
+
+      // load the universities
+      
+
+
+      
+      
+
+      
+      
+
+
+    </script>
+
+  </body>
+
+
+</html>
