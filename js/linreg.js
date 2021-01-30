@@ -1,6 +1,5 @@
 // linreg.js 
-// Function written for linear regression functionality
-// By Joseph Antonakakis
+
 
 
 // Given a dataset data, x and y namespaces xname and yname,

@@ -1,18 +1,20 @@
 // kcluster.js 
-// Functions written for k-means clustering functionality
-// By Joseph Antonakakis
+
 
 
 // Basic distance function
 function distanceFrom (a, b, xname, x, yname, y, data) {
-
+  console.log(a, b, xname, x, yname, y, data);
   // Maxes
   var maxX = d3.max(data, function (d) {
     return d[xname][x];
   });
+  console.log(maxX);
   var maxY = d3.max(data, function (d) {
+
     return d[yname][y];
   });
+  console.log(maxY);
 
 
   // Mins
@@ -48,6 +50,7 @@ function initalizeClusters (data, k) {
     var n = Math.floor(Math.random() * data.length)
     console.log(n);
     data[n]["id"] = i;
+    console.log(data);
     initial_centroids.push(JSON.parse(JSON.stringify(data[n]))); // Copies
   }
   console.log(initial_centroids);
@@ -66,8 +69,10 @@ function initializeData (data, clusters, xname, x, yname, y) {
     var distances = clusters.map(function(d) {
       return distanceFrom(data[i], d, xname, x, yname, y, data);
     });
+    console.log(distances)
     var minDist = d3.min(distances);
     var clusterIndex = distances.indexOf(minDist);
+    console.log(clusterIndex);
     var clusterId = clusters[clusterIndex].id;
     var dataCopy = JSON.parse(JSON.stringify(data[i])); // Copies
     dataCopy["clusterId"] = clusterId;
@@ -136,8 +141,11 @@ function changedClusters (data, clusters, xname, x, yname, y) {
 // iteration.  Returns data + clusters (to use in displaying the clustering).
 function kMeansCluster (originalData, k, xname, x, yname, y) {
   // Initialize
+  console.log(originalData, k, xname, x, yname, y)
   var clusters = initalizeClusters(originalData, k);
+  console.log(clusters);
   var data = initializeData(originalData, clusters, xname, x, yname, y);
+  console.log(data);
 
   // Initialize this to track the state of clustering
   var numChanged = null;
