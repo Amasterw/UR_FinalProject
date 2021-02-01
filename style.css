@@ -7,7 +7,7 @@
 
       /* SVG styling + drawing animation */
       svg {
-        fill: #80ccff; /* Purple fill #80ccff */
+        fill: #80ccff; 
         stroke: #6e455f; /* black path */
           stroke-dasharray: 2000px;
           stroke-dashoffset: 2000px;
@@ -52,7 +52,7 @@
       /* General SVG text styling */
       text, .graph-text {
         fill: #000000;
-        stroke: #c4a1b7;
+        stroke: #000000;
         font-size:70%;
       }
 

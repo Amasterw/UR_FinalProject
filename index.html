@@ -379,7 +379,7 @@
             var nonSelectedMapCircles = d3.selectAll(".map-circle")
                             .filter(function (d) {
                               var inArray = false;
-                              console.log(selectedStates);
+                              //console.log(selectedStates);
                               selectedStates.forEach(function (s) {
                                 inArray = inArray || (s == d["location_info"]["state"]);
                               });
@@ -918,7 +918,7 @@
 
             // Find the y-value given the raw line parameters
             var lineY = B1 * xValue + B0;
-            console.log(lineY);
+            //console.log(lineY);
 
             // Get the overall y-diff
             var overallYDiff = Math.abs(yExtent[1] - yExtent[0]);
