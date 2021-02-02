@@ -576,7 +576,7 @@
         var clusterResult = kMeansCluster(uniJSONs, 5,
                     "score_info", "mean_sat_score",
                     "admissions_info", "acceptance_rate")
-        predict(clusterResult);
+        predict(clusterResult,"score_info","mean_sat_score","admissions_info","acceptance_rate");
 
 
         // Add university dots
@@ -1234,7 +1234,7 @@
         var clusterResult = kMeansCluster(overAllData, 5,
                     firstParam, firstData,
                     secondParam, secondData);
-        predict(clusterResult);
+        predict(clusterResult,firstParam,firstData,secondParam,secondData);
 
         overAllData = clusterResult[0];
 

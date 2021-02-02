@@ -41,6 +41,8 @@
 
 
 
+
+
     <svg width="1650" height="600" id="mapSVG">
            <text x="675" y="55" id="univName">Interactive: hover over any circle on map or graph</text>
        <text x="675" y="75" id="univInfo"></text>
@@ -52,23 +54,46 @@
     <!-- Linear regression graphs  -->
     <svg width="1650" height="650" id="linRegSVG"></svg>
     <br>
-    <label for="sat">Enter SAT score:</label>
-    <input class="input sat-score" id="sat" type="text">
 
-    <label for="accptance">Enter acceptance rate:</label>
-    <input class="input accpt-rate" id="accpt" type="text">
+    <form id="form">
 
-    <button id="filter-btn" type="button" class="btn btn-default">Predict</button>
+      <label id="label1" for="label1">Enter SAT score:</label>
+      <input class="input1" id="first_val" type="text">
+  
+      <label id="label2" for="label2">Enter acceptance rate:</label>
+      <input class="input2" id="second_val" type="text">
+  
+      <button id="filter-btn" type="button" class="btn btn-default">Predict</button>
+    </form>
 
+    <div id="table-area" class="">
+      <table id="ucollegefo-table" class="table table-striped">
+        <thead>
+          <tr>
+            <th class="table-head">Rank</th>
+            <th class="table-head">Name</th>
+            <th class="table-head">State</th>
+            <th class="table-head">Link</th>
+            <th class="table-head">SAT Mean score</th>
+            <th class="table-head">Acceptance Rate</th>
+            <th class="table-head">Students</th>
+            <th class="table-head">Mid Career Median Salary</th>
 
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
     
 
     
 
+    
 
-    <!-- k-means clustering functions we wrote -->
+
+    <!-- k-means clustering functions  -->
     <script type="text/javascript" src="js/kcluster.js"></script>
-    <!-- linear regression functions we wrote -->
+    <!-- linear regression functions  -->
     <script type="text/javascript" src="js/linreg.js"></script>
     <script type="text/javascript" src="js/logic.js"></script>
     <script type="text/javascript" src="js/predict.js"></script>

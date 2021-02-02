@@ -189,6 +189,16 @@
         margin-bottom: 200px;
       }
 
+      #table-area th {
+        text-align: center;
+      }
+      
+      #table-area th:first-child,
+      #table-area th:nth-child(2),
+      #table-area th:nth-child(6) {
+        min-width: 70px;
+      }
+
 
 
 
