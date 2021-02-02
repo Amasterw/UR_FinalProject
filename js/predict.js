@@ -138,25 +138,70 @@ function runEnter() {
 
     var filteredData = data.filter(data => data["clusterId"] == clusterId);
     console.log(filteredData);
-    console.log(filteredData[1]["school"]);
-    rank=[];
-    college=[];
-    state=[];
-    link=[];
-    sat=[];
-    accpt=[];
-    students=[];
-    salary=[];
+    //console.log(filteredData[1]["school"]);
+    
+    var tbody=d3.select("tbody");
+    tbody.html("");
     for(var i=0;i<filteredData.length;i++){
-        rank.append(filteredData[i]["salary_info"]["rank"]);
-        college.append(filteredData[i]["school"]);
-        state.append(filteredData[i]["location_info"]["state"])
+
+        rank=filteredData[i]["salary_info"]["rank"];
+        college=filteredData[i]["school"];
+        state=filteredData[i]["location_info"]["state"];
+        link=filteredData[i]["link"];
+        sat=filteredData[i]["score_info"]["mean_sat_score"];
+        accpt=filteredData[i]["admissions_info"]["acceptance_rate"];
+        students=filteredData[i]["admissions_info"]["students"];
+        salary=filteredData[i]["salary_info"]["mid_career_median_salary"];
+        //col_data["Rank"]filteredData[i]["salary_info"]["rank"]);
+        //col_data["Name"]=filteredData[i]["school"]
+
+        var row = tbody.append("tr");
+        for( var j=0;j<8;j++){
+            var cell = row.append("td");
+            if(j==0){
+                cell.text(rank);
+            }
+            if(j==1){
+                cell.text(college);
+            }
+            if(j==2){
+                cell.text(state);
+            }
+            if(j==3){
+                //tag=cell.append("a").attr("href","https://"+link).append(link);
+                cell.text(link);
+            }
+            if(j==4){
+                cell.text(sat);
+            }
+            if(j==5){
+                cell.text(accpt);
+            }
+            if(j==6){
+                cell.text(students);
+            }
+            if(j==7){
+                cell.text(salary);
+            }
+
+
+            //cell.text(value);
+        }
+
 
     }
     
-
+    // col_data={
+    //     "Rank":rank,
+    //     "Name":college,
+    //     "State":state,
+    //     "Link":link,
+    //     "SAT Mean Score":sat,
+    //     "Acceptance Rate":accpt,
+    //     "Students":students,
+    //     "Mid Career Median Salary":salary
+    // }
     
-
 
 
 
