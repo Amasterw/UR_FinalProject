@@ -47,6 +47,8 @@ function predict(clusterResult,firstParam, firstData,secondParam, secondData){
     label2_tag=d3.select("#label2");
     label2_tag.text(label2);
     d3.select("#second_val").property("value","");
+    var tbody=d3.select("tbody");
+    tbody.html("");
     
 
  }
