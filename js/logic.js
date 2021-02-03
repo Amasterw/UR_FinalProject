@@ -992,34 +992,7 @@
             })
 
 
-          // Percent off the trend line
-          var percOff = popContainer.append("text")
-            .attr("class", "pop-over")
-            .attr("x", POWidth/2)
-            .attr("y", yOff*4)
-            .attr("alignment-baselines", "middle")
-            .attr("text-anchor", "middle")
-            .style("font-size", 8)
-            .text(function () {
-              // Get raw x + y values
-              var xValue = d[xNameSpace][xInfo];
-              var yValue = d[yNameSpace][yInfo];
-
-              // Find the y-value given the raw line parameters
-              var lineY = B1 * xValue + B0;
-
-              // Get the overall y-diff
-              var overallYDiff = Math.abs(yExtent[1] - yExtent[0]);
-
-              // Get the point - line difference (absolute value)
-              var pointYDiff = Math.abs(yValue-lineY);
-
-              // Get this coefficient
-              var coeff = pointYDiff.toFixed(5) / overallYDiff.toFixed(5);
-
-              var coeffString = (100*coeff.toFixed(3)).toString().substring(0,4);
-              return "Percent off Regression Line: " + coeffString + "%"
-            })
+         
 
 
           })
