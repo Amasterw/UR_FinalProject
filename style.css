@@ -8,7 +8,7 @@
       /* SVG styling + drawing animation */
       svg {
         fill: #80ccff; 
-        stroke: #6e455f; /* black path */
+        stroke: #438ecc; /* black path */
           stroke-dasharray: 2000px;
           stroke-dashoffset: 2000px;
           animation-name: draw;
@@ -59,8 +59,8 @@
 
       /* University info name styling */
       #univName {
-          fill: #8d587a;
-        stroke: #6e455f;
+          fill: #2cdb52;
+        stroke: #022e05;
         stroke-width:0.3px;
         font-size:110%;
         text-anchor:middle;

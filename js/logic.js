@@ -31,7 +31,7 @@
       var DARK_BLUE = "#003d66";
       var LIGHT_BLUE = "#80ccff";
       var YELLOW = "#e6e600";
-      var CLUSTER_YELLOW = "#4dffb8";
+      var RED = "red";
       var GRAY = "#999999";
 
       // Global list of university JSONs
@@ -612,8 +612,8 @@
           .attr("class", "clusterDot")
           .attr("cx", function (d) { return xScale(d["score_info"]["mean_sat_score"]); })
           .attr("cy", function (d) { return yScale(d["admissions_info"]["acceptance_rate"]); })
-          .style("fill", CLUSTER_YELLOW)
-          .style("stroke", CLUSTER_YELLOW)
+          .style("fill", RED)
+          .style("stroke", RED)
           .on("mouseover", function (d){
 
             clusterMouseOver(d);
@@ -1340,8 +1340,8 @@
             d["cy"] = trueCY;
             return trueCY;
           })
-          .style("fill", CLUSTER_YELLOW)
-          .style("stroke", CLUSTER_YELLOW)
+          .style("fill", RED)
+          .style("stroke", RED)
           .style("opacity", 0).on("mouseover", function (d) {
 
             clusterMouseOver(d);
