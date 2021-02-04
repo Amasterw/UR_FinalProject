@@ -1,12 +1,3 @@
-There exist relatively consistent k-means clustering groupings of universities.
-
-In terms of scaled-% off the regression line, Acceptance Rate (%) vs. SAT Score appeared to have
-the "tightest" regression, possibly indicating that many universities from the dataset don't stray
-from a linear correlation of SAT to acceptance rate
-
-Clustering and regression allows one to spot outliers in terms of the parameter selected, and enables
-the user to discover new universities, or view previously known universities in a new light.
-
 Our visualization shows the differences and similarities between US universities in different 
 states based on the 3 variables: SAT score, acceptance rate, and mid-career median salary (this is the 
 map and clustering). It also shows the general trends for universities when comparing 2 of the 3 variables(this 
@@ -35,3 +26,9 @@ lower SAT score and easier admission requirements.
 On the opposite end of the spectrum, certain schools appear to be less efficient, requiring a higher SAT score 
 or more harsh admission statistics, only to yield a lower median career salary. Schools like Wellesley College 
 fit this category (30% acceptance rate, 1410 SAT score, $78,400 mid-career salary).
+
+There exist relatively consistent k-means clustering groupings of universities.
+
+In terms of scaled-% off the regression line, Acceptance Rate (%) vs. SAT Score appeared to have
+the "tightest" regression, possibly indicating that many universities from the dataset don't stray
+from a linear correlation of SAT to acceptance rate
