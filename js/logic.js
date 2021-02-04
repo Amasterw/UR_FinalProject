@@ -1007,46 +1007,6 @@
         /* END OF LINEAR REGRESSION GRAPHS */
 
 
-
-        /* LINEAR REGRESSION COLOR SCALE */
-
-        // Words
-
-        xTrack = 200+xOffset-80;
-        var lineWidth = (lgPadding*2 + lgWidth+160) / 4;
-        var i = 1;
-        while(i < 5) {
-          d3.select("#linRegSVG").append("text")
-              .attr("x",  function () { return (xTrack + lineWidth / 2); })
-              .attr("y", 570)
-              .attr("alignment-baselines", "middle")
-              .attr("text-anchor", "middle")
-              .style("fill", DARK_BLUE)
-              .style("font-size", 8)
-              .text(function () {
-                var perc = i*25;
-                return (perc-25) + "% < n < " + perc + "% off Regression Line";
-              });
-          xTrack+=lineWidth;
-          i++;
-        }
-
-
-        // Colors
-        xTrack = 200+xOffset-80;
-        i = 1;
-        while (i < 5) {
-          d3.select("#linRegSVG")
-              .append("rect")
-              .attr("width", lineWidth)
-              .attr("height", 10)
-              .attr("transform", "translate(" + xTrack + ", 580)")
-              .style("fill", DARK_BLUE)
-              .style("opacity", i*0.25);
-          xTrack+=lineWidth;
-          i++;
-        }
-
       });
 
 
