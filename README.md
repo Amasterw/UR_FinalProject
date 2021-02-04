@@ -23,3 +23,7 @@ for some clustering runs, and a clear outlier on two regression graphs.
   On the opposite end of the spectrum, certain schools appear to be less efficient, requiring a higher SAT score
 or more harsh admission statistics, only to yield a lower median career salary. Schools like Wellesley College
 fit this category (30% acceptance rate, 1410 SAT score, $78,400 mid-career salary).
+
+Data Sources include:
+https://www.collegesimply.com/guides/1600-on-the-sat
+https://www.payscale.com/college-salary-report/bachelors?page=1
