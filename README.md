@@ -4,7 +4,7 @@
 states based on the 3 variables: SAT score, acceptance rate, and mid-career median salary (this is the 
 map and clustering). It also shows the general trends for universities when comparing 2 of the 3 variables(this 
 is the regression graphs). In general, it is not surprising to find a negative linear relationship between 
-acceptance rate and any of those 2 variables,and  or the positive linear relationship between salary and SAT score, 
+acceptance rate and any of those 2 variables, or the positive linear relationship between salary and SAT score, 
 since usually the more selective universities yield higher-paid graduates. What is of interest though, is the 
 amount of variation in one variable of universities that are close to each other in the other variable. 
 One of the most extreme examples of this would be College of the Ozarks, which has acceptance rate of only 
